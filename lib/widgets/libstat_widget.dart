@@ -47,7 +47,20 @@ class _LibraryRoomsWidgetState extends State<LibraryRoomsWidget> {
             ),
           );
         } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Card(
+              child: Container(
+                width: double.infinity, // Adjust based on your UI needs
+                height: 200,
+                padding: const EdgeInsets.all(8),
+                child: Center(child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Something went wrong:${snapshot.error}"),
+                    const SizedBox(height: 8),
+                    OutlinedButton(onPressed: _refreshDataPeriodically, child: const Text("Refresh"))
+                  ],
+                )),
+              ));
         } else if (snapshot.hasData) {
           List<dynamic> rooms = snapshot.data!;
           return SizedBox(
