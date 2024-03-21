@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:june/june.dart';
 import 'package:koala/views/settings_view.dart';
 import 'package:koala/widgets/libstat_widget.dart';
 import 'package:koala/widgets/qrcode_widget.dart';
@@ -29,7 +28,7 @@ class MainWidget extends StatelessWidget {
             scrollDirection: Axis.vertical,
             child: Container(
               color: Theme.of(context).canvasColor,
-              child: const Center(
+              child:  const Center(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     child: Column(

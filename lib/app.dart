@@ -1,10 +1,10 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:june/june.dart';
+import 'package:koala/main.dart';
 import 'package:koala/services/login.dart';
 import 'package:koala/views/login_view.dart';
 import 'package:koala/views/main_view.dart';
-import 'package:koala/widgets/qrcode_widget.dart';
 import 'package:koala/widgets/user_status_widget.dart';
 
 const _khred = Color.fromARGB(1, 255, 0, 1);
@@ -33,12 +33,13 @@ class KoalaApp extends StatelessWidget {
           brightness: Brightness.dark,
         );
       }
-      return MaterialApp(
+      return JuneBuilder(() => KoalaSessionVM(), builder: (vm) => MaterialApp(
         title: 'Koala',
         theme: ThemeData(colorScheme: lightColorScheme, useMaterial3: true),
         darkTheme: ThemeData(colorScheme: darkColorScheme, useMaterial3: true),
+        themeMode: vm.isDarkMode ? ThemeMode.dark : ThemeMode.light,
         home: const InitialLoadingPage(),
-      );
+      ));
     });
   }
 }

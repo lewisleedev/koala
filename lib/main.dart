@@ -16,11 +16,19 @@ class KoalaSessionVM extends JuneState {
   late CookieJar cookieJar;
   late Dio dio;
   late Box<dynamic> box;
+  late bool isDarkMode;
 
   initialize() async {
     dio = await newDioClient();
     cookieJar = await setupCookieManager(dio);
     box = await openSafeBox();
+    isDarkMode = box.get('darkMode') ?? ThemeMode.system == ThemeMode.dark ? true : false;
+    setState();
+  }
+
+  switchTheme(bool darkMode) {
+    box.put('darkMode', darkMode);
+    isDarkMode = darkMode;
     setState();
   }
 

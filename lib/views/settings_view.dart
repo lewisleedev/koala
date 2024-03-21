@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
+import 'package:june/june.dart';
+import 'package:koala/main.dart';
 import 'package:koala/services/login.dart';
 import 'package:koala/views/login_view.dart';
 import 'package:koala/widgets/check_update.dart';
@@ -28,6 +30,15 @@ class _SettingsPageState extends State<SettingsPage> {
       body: ListView(
         children: <Widget>[
           UpdateCheckerWidget(),
+          JuneBuilder(() => KoalaSessionVM(),
+              builder: (vm) => ListTile(
+                  leading: const Icon(Icons.light_mode),
+                  title: const Text('Theme'),
+                  subtitle: const Text('Change the theme of the app'),
+                  trailing: Switch(
+                    value: vm.isDarkMode,
+                    onChanged: vm.switchTheme,
+                  ))),
           ListTile(
             leading: const Icon(Icons.book),
             title: const Text('View Licenses'),
