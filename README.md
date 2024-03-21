@@ -40,14 +40,14 @@ Koala securely stores your plaintext credentials in Hive's encrypted box, with t
   ### Main page
   ![](docs/2.png)
 
-  ### Main page
+  ### Seats page
   ![](docs/1.png)
 
 </details>
 
 ## Known Issues
 
-> ⚠️ Please note that Koala is currently in beta and may undergo significant changes. If you encounter any issues not listed below, please open an issue on our GitHub repository.
+> ⚠️ Please note that Koala is currently in early beta and may undergo significant changes. If you encounter any issues not listed below, please open an issue on our GitHub repository.
 
 > ℹ️ Most issues can be resolved by simply restarting the app.
 
@@ -66,6 +66,6 @@ Koala will also have limited or no support for these:
 
 ## License & Disclaimer
 
-This project is licensed under the MPL License - see the [LICENSE.md](LICENSE.md) file for details. This means you're free to use, modify, and distribute this software as you wish, provided you include the original copyright and permission notice in all copies or substantial portions of the software.
+This project is licensed under the MPL License - see the [LICENSE.md](LICENSE.md) file for details. 
 
 This software is provided "AS IS", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the software or the use or other dealings in the software.
