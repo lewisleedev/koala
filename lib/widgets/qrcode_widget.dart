@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:koala/models/qrcode.dart';
+import 'package:koala/services/utils.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:screen_brightness/screen_brightness.dart';
 import '../services/qrcode.dart';
 
 class QRDisplayWidget extends StatefulWidget {
@@ -62,13 +64,26 @@ class _QRDisplayWidgetState extends State<QRDisplayWidget> {
     super.dispose();
   }
 
+  void _updateBrightnessAndExit(BuildContext context) async {
+      try {
+        await ScreenBrightness().resetScreenBrightness();
+      } catch (e) {
+        if (!context.mounted) return;
+        showSnackbar(context, "Couldn't reset brightness: $e");
+      };
+      if (!context.mounted) return;
+      Navigator.pop(context);
+  }
+
   void _showZoomedQR(BuildContext context) {
     showGeneralDialog(
       context: context,
       pageBuilder:
           (BuildContext context, Animation<double> a, Animation<double> a2) {
         return GestureDetector(
-          onTap: () => Navigator.pop(context),
+          onTap: (){
+            _updateBrightnessAndExit(context); // Quick and dirty
+          },
           behavior: HitTestBehavior.opaque,
           child: Dialog(
             shadowColor: Colors.transparent,
@@ -145,7 +160,16 @@ class _QRDisplayWidgetState extends State<QRDisplayWidget> {
     return Column(
       children: [
         GestureDetector(
-          onTap: () => _showZoomedQR(context),
+          onTap: () async {
+            try {
+              await ScreenBrightness().setScreenBrightness(1.0);
+            } catch (e) {
+              if (!mounted) return;
+              showSnackbar(context, "Failed to set brighness");
+            }
+            if (!mounted) return;
+            _showZoomedQR(context);
+          },
           child: QrImageView(
             data: qrData.qrCodeString,
             version: 7,
