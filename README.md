@@ -11,7 +11,6 @@
 
 > Kyeonghee University's Opensource App for Library Access
 
-[![Download](docs/getitongithub.png)](https://github.com/lewisleedev/koala/releases/latest)
 [<img src="https://github.com/lewisleedev/koala/raw/main/docs/getitongithub.png" width="200" />](https://github.com/lewisleedev/koala/releases/latest)
 
 An **unofficial** client to the library system for Kyunghee University. You can use QR code to get into the library or reserve and leave your seats with far less requests than the official app(if it even works in the first place..)
