@@ -1,3 +1,7 @@
+![GitHub Release](https://img.shields.io/github/v/release/lewisleedev/koala?include_prereleases&style=for-the-badge)
+![GitHub License](https://img.shields.io/github/license/lewisleedev/koala?style=for-the-badge)
+![GitHub last commit](https://img.shields.io/github/last-commit/lewisleedev/koala?style=for-the-badge)
+
 ![](assets/icon/icon.png)
 
 
@@ -6,6 +10,8 @@
 # koala
 
 > Kyeonghee University's Opensource App for Library Access
+
+[![Download](docs/getitongithub.png)](https://github.com/lewisleedev/koala/releases/latest)
 
 An **unofficial** client to the library system for Kyunghee University. You can use QR code to get into the library or reserve and leave your seats with far less requests than the official app(if it even works in the first place..)
 
