@@ -2,19 +2,23 @@ import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
-import 'package:koala/app.dart';
 import 'package:koala/services/login.dart';
 import 'package:koala/views/login_view.dart';
+import 'package:koala/widgets/check_update.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../services/data.dart';
 import '../services/utils.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
 
+class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,16 +27,19 @@ class SettingsPage extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
+          UpdateCheckerWidget(),
           ListTile(
             leading: const Icon(Icons.book),
             title: const Text('View Licenses'),
             subtitle: const Text('See open source licenses'),
             onTap: () {
-              showLicensePage(context: context,
-                  applicationIcon: Image.asset("assets/icon/icon.png", width: 100),
-                applicationName: "Koala",
-                applicationLegalese: "This app is free & open-sourced.\nLogo from Fluent Emoji"
-              );
+              showLicensePage(
+                  context: context,
+                  applicationIcon:
+                      Image.asset("assets/icon/icon.png", width: 100),
+                  applicationName: "Koala",
+                  applicationLegalese:
+                      "This app is free & open-sourced.\nLogo from Fluent Emoji");
             },
           ),
           ListTile(
@@ -52,18 +59,19 @@ class SettingsPage extends StatelessWidget {
             title: const Text('Logout'),
             subtitle: const Text('Sign out of your account'),
             onTap: () async {
-              final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
-              var cookieJar = PersistCookieJar(storage: FileStorage("${appDocumentsDir.path}/cookie"));
+              final Directory appDocumentsDir =
+                  await getApplicationDocumentsDirectory();
+              var cookieJar = PersistCookieJar(
+                  storage: FileStorage("${appDocumentsDir.path}/cookie"));
               await cookieJar.deleteAll();
               var box = await openSafeBox();
               await box.clear();
               if (!context.mounted) return;
               Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                  builder: (context) => const LoginWidget(),
-                ),
-                (Route<dynamic> route) => false
-              );
+                  MaterialPageRoute(
+                    builder: (context) => const LoginWidget(),
+                  ),
+                  (Route<dynamic> route) => false);
             },
           ),
           ListTile(
@@ -74,7 +82,8 @@ class SettingsPage extends StatelessWidget {
               if (await refreshLogin() <= 0) {
                 if (!context.mounted) return;
                 Navigator.of(context).pop();
-                showSnackbar(context, "Session refreshed. It is recommended that you restart the app.");
+                showSnackbar(context,
+                    "Session refreshed. It is recommended that you restart the app.");
               } else {
                 if (!context.mounted) return;
                 showSnackbar(context, "Something went wrong");
@@ -110,4 +119,3 @@ class SettingsPage extends StatelessWidget {
     );
   }
 }
-
