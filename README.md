@@ -9,7 +9,7 @@
 
 # koala
 
-> Kyeonghee University's Opensource App for Library Access
+> Kyunghee University's Opensource App for Library Access
 
 [<img src="https://github.com/lewisleedev/koala/raw/main/docs/getitongithub.png" width="200" />](https://github.com/lewisleedev/koala/releases/latest)
 
