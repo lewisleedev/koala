@@ -3,12 +3,10 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:june/june.dart';
 import 'package:koala/main.dart';
+import 'package:koala/models/error_extension.dart';
 import 'package:koala/models/user_status.dart';
-import 'package:koala/services/status.dart';
 import 'package:koala/services/utils.dart';
 import 'package:koala/widgets/user_status_widget.dart';
-
-import 'login.dart';
 
 Future<List<Map<String, dynamic>>> fetchSeats(int roomCode) async {
   var session = June.getState(KoalaSessionVM());
@@ -59,20 +57,24 @@ Future<bool> setSeat(int seatCode, int roomCode) async {
 }
 
 Future<bool> extendSeat() async {
+  // careful evaluations with the Javascript code suggests that this should work.
   var session = June.getState(KoalaSessionVM());
   var userStatus = June.getState(UserStatusVM());
   await session.refreshSession();
   Dio dio = session.dio;
 
   var statusRes = userStatus.status;
+
   int extndTime = 0;
+
   if (statusRes?.data.mySeat == null) {
     throw Exception("Not using any seat");
   }
+
   int? seatCode = statusRes?.data.mySeat?.seat.code;
   int? groupCode = statusRes?.data.mySeat?.seat.group.code;
 
-  if (groupCode == 1) {
+  if (groupCode == 1 || groupCode == 8) { // is it nice? no. does it work? think so.
     extndTime = 240;
   } else {
     extndTime = min(minutesUntilMidnight(), 240);
@@ -86,13 +88,14 @@ Future<bool> extendSeat() async {
       {"major": 1, "minor": 1}
     ]
   };
+
   final res = await dio.post(
     "https://libseat.khu.ac.kr/libraries/seat-extension",
     data: requestData,
   );
 
   if (res.data['data'] != 1) {
-    throw Exception("Something went wrong: ${res.data['data']}");
+    throw Exception(extndErrorFromCode(res.data['data']).message);
   } else {
     return true;
   }
