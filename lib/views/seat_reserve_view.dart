@@ -27,8 +27,8 @@ class SeatReserveWidget extends StatelessWidget {
                         BoxConstraints constraints) {
                       return SeatsCanvas(
                         roomCode: room['code'],
-                        backgroundImg: room['backgroundImg'],
                         roomName: room['name'],
+                        imagePath: room['imagePath'],
                       );
                     },
                     )                ),

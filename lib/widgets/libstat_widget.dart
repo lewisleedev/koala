@@ -16,7 +16,7 @@ class _LibraryRoomsWidgetState extends State<LibraryRoomsWidget> {
   @override
   void initState() {
     super.initState();
-    _futureRooms = getLibraryStatus();
+    _futureRooms = libraryStatusHandler();
     _refreshDataPeriodically();
   }
 
@@ -26,7 +26,7 @@ class _LibraryRoomsWidgetState extends State<LibraryRoomsWidget> {
         timer.cancel();
       } else {
         setState(() {
-          _futureRooms = getLibraryStatus();
+          _futureRooms = libraryStatusHandler();
         });
       }
     });

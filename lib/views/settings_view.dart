@@ -38,7 +38,18 @@ class _SettingsPageState extends State<SettingsPage> {
                   trailing: Switch(
                     value: vm.isDarkMode,
                     onChanged: vm.switchTheme,
-                  ))),
+                  ))
+          ),
+          JuneBuilder(() => KoalaSessionVM(),
+              builder: (vm) => ListTile(
+                  leading: const Icon(Icons.light_mode),
+                  title: const Text('Campus'),
+                  subtitle: const Text('Turn this on if you\'re at Global campus. Restart recommended.'),
+                  trailing: Switch(
+                    value: vm.isGlobalCampus,
+                    onChanged: vm.switchCampus,
+                  ))
+          ),
           ListTile(
             leading: const Icon(Icons.book),
             title: const Text('View Licenses'),

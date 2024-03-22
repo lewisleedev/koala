@@ -65,7 +65,24 @@ class _UserStatusWidgetState extends State<UserStatusWidget> {
               ),
             );
           } else if (snapshot.hasError) {
-            return Text("Something went wrong: ${snapshot.error}");
+            return Card(
+              child: Container(
+                width: double.infinity,
+                height: 200,
+                padding: const EdgeInsets.all(8),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Something went wrong: ${snapshot.error}"),
+                      SizedBox(height: 10),
+                      OutlinedButton(
+                          onPressed: _refreshStatus, child: const Text("Refresh")),
+                    ],
+                  ),
+                ),
+              ),
+            );
           } else {
             return JuneBuilder(
               () => UserStatusVM(),
@@ -174,24 +191,12 @@ class _UserStatusWidgetState extends State<UserStatusWidget> {
           },
           child: const Text("Leave"),
         ),
-        if (isExtensionAllowed) const SizedBox(width: 10),
-        if (isExtensionAllowed) OutlinedButton(
-          onPressed: isExtensionAllowed
-              ? () async {
+        const SizedBox(width: 10),
+        OutlinedButton(
+          onPressed: isExtensionAllowed ? () async {
             await _checkAndExtend(context);
             _refreshStatus();
-          }
-              : null,
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                  (Set<MaterialState> states) {
-                if (states.contains(MaterialState.disabled)) {
-                  return Colors.grey; // Disabled button color
-                }
-                return Colors.blue; // Regular button color
-              },
-            ),
-          ),
+          } : null,
           child: const Text(
             "Extend",
             style: TextStyle(

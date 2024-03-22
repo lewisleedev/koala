@@ -7,13 +7,13 @@ import '../services/seat.dart';
 class SeatsCanvas extends StatefulWidget {
   final int roomCode;
   final String roomName;
-  final String backgroundImg;
+  final String imagePath;
 
   const SeatsCanvas(
       {super.key,
       required this.roomCode,
-      required this.backgroundImg,
-      required this.roomName});
+      required this.roomName,
+      required this.imagePath});
 
   @override
   _SeatsCanvasState createState() => _SeatsCanvasState();
@@ -58,18 +58,18 @@ class _SeatsCanvasState extends State<SeatsCanvas> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     AspectRatio(
-                      aspectRatio: 1400 / 720,
+                      aspectRatio: 1380 / 700,
                       child: Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
                               image: AssetImage(
-                                  "assets/images/clib0${widget.roomCode}.jpg")),
+                                  "assets/images/${widget.imagePath}")),
                         ),
                         child: LayoutBuilder(
                           builder: (BuildContext context,
                               BoxConstraints constraints) {
                             Size containerSize = Size(constraints.maxWidth,
-                                constraints.maxWidth * 720 / 1400);
+                                constraints.maxWidth * 700 / 1380);
                             return Stack(
                               children: snapshot.data!
                                   .map((seat) => _buildSeat(
@@ -97,9 +97,9 @@ class _SeatsCanvasState extends State<SeatsCanvas> {
   Widget _buildSeat(Map<String, dynamic> seat, BuildContext context,
       Size containerSize, int roomCode, String roomName) {
     final bool isActive = seat['seatTime'] == null;
-    final double xpos = ((seat['xpos'] / 1980) * containerSize.width);
+    final double xpos = ((seat['xpos'] / 1920) * containerSize.width);
     final double ypos = ((seat['ypos'] / 900) * containerSize.height);
-    final double width = (seat['width'] / 1980) * containerSize.width;
+    final double width = (seat['width'] / 1920) * containerSize.width;
     final double height = (seat['height'] / 900) * containerSize.height;
     final Color boxColor = Theme.of(context).colorScheme.primaryContainer;
     final Color textColor = Theme.of(context).colorScheme.primary;
