@@ -40,7 +40,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
-  fast_rsa: fb8f20e50f4928e68086975701dd788813ef8ee1
+  fast_rsa: 39d70466fadba03df6481cb88d7929250478407e
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
@@ -50,4 +50,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.12.1
