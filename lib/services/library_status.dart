@@ -31,7 +31,7 @@ Future<List<dynamic>> getLibraryStatus() async {
             'maxRenewMi': item['maxRenewMi']
           })
       .toList();
-  return parsedData.sublist(0, session.isGlobalCampus? 3 : 5);
+  return parsedData.sublist(0, session.isGlobalCampus? 4 : 5);
 }
 Future<List<Map<String, dynamic>>> libraryStatusHandler() async {
   List<dynamic> statusData = await getLibraryStatus();
