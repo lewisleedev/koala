@@ -2,7 +2,7 @@ name: koala
 description: "KHU's Opensource App for Library Access"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 0.1.1+2
+version: 0.1.2+3
 
 environment:
   sdk: '>=3.3.1 <4.0.0'
