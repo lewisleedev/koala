@@ -65,7 +65,24 @@ class _UserStatusWidgetState extends State<UserStatusWidget> {
               ),
             );
           } else if (snapshot.hasError) {
-            return Text("Something went wrong: ${snapshot.error}");
+            return Card(
+              child: Container(
+                width: double.infinity,
+                height: 200,
+                padding: const EdgeInsets.all(8),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Something went wrong: ${snapshot.error}"),
+                      SizedBox(height: 10),
+                      OutlinedButton(
+                          onPressed: _refreshStatus, child: const Text("Refresh")),
+                    ],
+                  ),
+                ),
+              ),
+            );
           } else {
             return JuneBuilder(
               () => UserStatusVM(),
