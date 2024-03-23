@@ -78,7 +78,7 @@ class _LoginWidgetState extends State<LoginWidget> {
               children: [
                 Image.asset('assets/images/logo.png', width: 120),
                 const Text("KOALA", style: TextStyle(fontSize: 25)),
-                const Text("KHU's Opensouce App for Library Access",
+                const Text("KHU's Opensource App for Library Access",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 12,
