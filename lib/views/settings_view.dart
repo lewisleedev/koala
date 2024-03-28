@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
 import 'package:june/june.dart';
+import 'package:koala/app.dart';
 import 'package:koala/main.dart';
 import 'package:koala/services/login.dart';
 import 'package:koala/views/login_view.dart';
@@ -19,6 +20,7 @@ class SettingsPage extends StatefulWidget {
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
+
 
 class _SettingsPageState extends State<SettingsPage> {
   @override
@@ -42,12 +44,19 @@ class _SettingsPageState extends State<SettingsPage> {
           ),
           JuneBuilder(() => KoalaSessionVM(),
               builder: (vm) => ListTile(
-                  leading: const Icon(Icons.light_mode),
+                  leading: const Icon(Icons.school_rounded),
                   title: const Text('Campus'),
                   subtitle: const Text('Turn this on if you\'re at Global campus. Restart recommended.'),
                   trailing: Switch(
                     value: vm.isGlobalCampus,
-                    onChanged: vm.switchCampus,
+                    onChanged: (bool b) {
+                      vm.switchCampus(b);
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (context) => const KoalaApp(),
+                          ),
+                              (Route<dynamic> route) => false);
+                    },
                   ))
           ),
           ListTile(

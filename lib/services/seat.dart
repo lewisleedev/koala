@@ -35,7 +35,7 @@ Future<bool> setSeat(int seatCode, int roomCode) async {
   if (roomCode == 1) {
     useTime = 240;
   } else {
-    useTime = min(minutesUntilMidnight(), 240);
+    useTime = calculateSeatTime();
   }
 
   var seatData = {"seatId": seatCode, "time": useTime};
@@ -77,7 +77,7 @@ Future<bool> extendSeat() async {
   if (groupCode == 1 || groupCode == 8) { // is it nice? no. does it work? think so.
     extndTime = 240;
   } else {
-    extndTime = min(minutesUntilMidnight(), 240);
+    extndTime = calculateSeatTime();
   }
 
   Map<String, dynamic> requestData = {

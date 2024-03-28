@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:koala/views/seat_reserve_view.dart';
 import '../services/library_status.dart';
+import '../services/utils.dart';
 
 class LibraryRoomsWidget extends StatefulWidget {
   const LibraryRoomsWidget({super.key});
@@ -50,8 +51,7 @@ class _LibraryRoomsWidgetState extends State<LibraryRoomsWidget> {
           return Card(
               child: Container(
                 width: double.infinity, // Adjust based on your UI needs
-                height: 200,
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(12),
                 child: Center(child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -70,6 +70,7 @@ class _LibraryRoomsWidgetState extends State<LibraryRoomsWidget> {
               itemCount: rooms.length,
               itemBuilder: (context, index) {
                 var room = rooms[index];
+                bool isOpen = isRoomOpen(room['fromHour'], room['untilHour']);
                 return Card(
                   child: Container(
                     width: 300, // Adjust based on your UI needs
@@ -80,17 +81,27 @@ class _LibraryRoomsWidgetState extends State<LibraryRoomsWidget> {
                         Text(room['name'],
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 20)),
-                        Text('Available: ${room['available']}'),
-                        Text('In Use: ${room['inUse']}'),
-                        Text('Day Off: ${room['dayOff'] ?? "No"}'),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Chip(
+                                avatar: const Icon(Icons.chair)
+                                ,label: Text("${room['available']}")),
+                            SizedBox(width: 8),
+                            Chip(
+                                avatar: const Icon(Icons.person)
+                                ,label: Text("${room['inUse']}")),
+                          ],
+                        ),
                         OutlinedButton(
-                            onPressed: () {
+                            onPressed: isOpen ? () {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => SeatReserveWidget(room: room)
                               ));
-                            },
-                            child: const Text("Reserve a seat"))
+                            } : null,
+                            child: isOpen ? const Text("Reserve a seat") : const Text("Closed")
+                        )
                       ],
                     ),
                   ),

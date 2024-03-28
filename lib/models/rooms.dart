@@ -48,7 +48,7 @@ const LibraryRoom RoomS4 = LibraryRoom(
 
 const LibraryRoom RoomG1 = LibraryRoom(
     groupCode: 8,
-    fromHour: 24,
+    fromHour: 0,
     untilHour: 0,
     is24hour: true,
     imagePath: "csquare05.jpg");

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
@@ -89,9 +90,28 @@ void showSnackbar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
 
-int minutesUntilMidnight() {
+int calculateSeatTime() {
+  // For example, when you are trying to extend seat at 10:45, you'll have to request for 60 minutes.
+  // Weird behavior requires weird solution.
+  // Not all edge cases have been tested.
   DateTime now = DateTime.now();
   DateTime midnight = DateTime(now.year, now.month, now.day + 1);
-  Duration difference = midnight.difference(now);
-  return difference.inMinutes;
+  int minutesUntilMidnight = midnight.difference(now).inMinutes;
+  int maxExtensionTime = (minutesUntilMidnight ~/ 30) * 30;
+  return min(240, maxExtensionTime);
+}
+
+bool isRoomOpen(int fromHour, int untilHour) {
+  int currentHour = DateTime.now().hour;
+  if (fromHour == 0 && untilHour == 0) {
+    return true;
+  }
+  if (untilHour == 0) {
+    untilHour = 24;
+  }
+  if (fromHour <= untilHour) {
+    return currentHour >= fromHour && currentHour < untilHour;
+  } else {
+    return currentHour >= fromHour || currentHour < untilHour;
+  }
 }

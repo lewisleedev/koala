@@ -28,17 +28,17 @@ class _QRDisplayWidgetState extends State<QRDisplayWidget> {
 
   Future<EntryQRCode> _initializeQRData() async {
     qrData = await qrHandler();
-    updateTimeLeft();
+    _updateTimeLeft();
     return qrData;
   }
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      updateTimeLeft();
+      _updateTimeLeft();
     });
   }
 
-  void updateTimeLeft() {
+  void _updateTimeLeft() {
     DateTime expireDt = DateTime.fromMicrosecondsSinceEpoch(qrData.expiresAt);
     Duration diff = expireDt.difference(DateTime.now());
     if (diff.isNegative) {
@@ -54,7 +54,7 @@ class _QRDisplayWidgetState extends State<QRDisplayWidget> {
 
   Future<EntryQRCode> _refreshQRCode() async {
     qrData = await qrHandler(force: true);
-    updateTimeLeft();
+    _updateTimeLeft();
     return qrData;
   }
 
@@ -95,7 +95,7 @@ class _QRDisplayWidgetState extends State<QRDisplayWidget> {
                 child: QrImageView(
                   data: qrData.qrCodeString,
                   version: 7,
-                  size: MediaQuery.of(context).size.width * 0.7,
+                  size: MediaQuery.of(context).size.width * 0.5,
                   backgroundColor: Colors.white,
                   eyeStyle: const QrEyeStyle(
                     eyeShape: QrEyeShape.square,
