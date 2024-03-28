@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:dio/dio.dart';
 import 'package:june/june.dart';
 import 'package:koala/main.dart';
