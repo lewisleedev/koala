@@ -1,6 +1,7 @@
 ![GitHub Release](https://img.shields.io/github/v/release/lewisleedev/koala?include_prereleases&style=for-the-badge)
 ![GitHub License](https://img.shields.io/github/license/lewisleedev/koala?style=for-the-badge)
 ![GitHub last commit](https://img.shields.io/github/last-commit/lewisleedev/koala?style=for-the-badge)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/lewisleedev/koala/total?style=for-the-badge)
 
 ![](assets/icon/icon.png)
 
@@ -57,7 +58,6 @@ Koala securely stores your plaintext credentials in Hive's encrypted box, with t
 
 > ℹ️ Most issues can be resolved by simply restarting the app.
 
-- Seat extension feature is not yet implemented (fix coming soon!).
 - Some widgets may experience glitches, such as the timer not starting or occasional errors.
 
 ## About Future Updates & iOS support
@@ -68,7 +68,7 @@ Koala will also have limited or no support for these:
 - Web/Windows/macOS/Linux client (Linux client works but still it won't be supported or built)
 - Constant update / bug fix
 - New features (anything not related to seats is out of scope)
-- Play Store (I will not )
+- Play Store
 
 ## License & Disclaimer
 
