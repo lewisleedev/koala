@@ -14,7 +14,7 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   path_provider: ^2.1.2
   june: ^0.8.5
-  dio: ^5.4.1
+  dio: ^5.4.2+1
   cookie_jar: ^4.0.8
   dio_cookie_manager: ^3.1.1
   fast_rsa: ^3.6.1
