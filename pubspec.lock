@@ -12,7 +12,7 @@ packages:
   analyzer:
     dependency: transitive
     description:
-      name: analyzer
+      name: analyzerc.lo
       sha256: "37577842a27e4338429a1cbc32679d508836510b056f1eedf0c8d20e39c1383d"
       url: "https://pub.dev"
     source: hosted
