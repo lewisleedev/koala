@@ -13,7 +13,7 @@ Future<Map<String, dynamic>> _getLatestRelease({bool forced = false}) async {
 
   Box settingsBox = await Hive.openBox("settings");
   var checkHistory = await settingsBox.get("updateHistory");
-  DateTime? lastChecked = checkHistory["lastChecked"];
+  DateTime? lastChecked = checkHistory?["lastChecked"];
 
   if (lastChecked != null && !forced) {
     if (lastChecked.add(const Duration(hours: 24)).isAfter(DateTime.now())) {
