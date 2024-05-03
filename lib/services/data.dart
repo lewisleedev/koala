@@ -7,20 +7,19 @@ import 'package:path_provider/path_provider.dart';
 
 Future<Box> openSafeBox() async {
   const secureStorage = FlutterSecureStorage();
-  final encryptionKeyString = await secureStorage.read(key: 'key');
+  final encryptionKeyString = await secureStorage.read(key: 'credentialsKey');
   if (encryptionKeyString == null) {
     final key = Hive.generateSecureKey();
     await secureStorage.write(
-      key: 'key',
+      key: 'credentialsKey',
       value: base64UrlEncode(key),
     );
   }
-  final key = await secureStorage.read(key: 'key');
-  final encryptionKeyUint8List = base64Url.decode(key!);
-  final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
-  final encryptedBox = await Hive.openBox('safeBox',
+  final key = await secureStorage.read(key: 'credentialsKey');
+  final keyUint8List = base64Url.decode(key!);
+  final Directory appDocumentsDir = await getApplicationSupportDirectory();
+  final encryptedBox = await Hive.openBox('credentials',
       path: appDocumentsDir.path.toString(),
-      encryptionCipher: HiveAesCipher(encryptionKeyUint8List));
-
+      encryptionCipher: HiveAesCipher(keyUint8List));
   return encryptedBox;
 }

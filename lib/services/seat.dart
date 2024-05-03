@@ -1,110 +1,15 @@
 import 'package:dio/dio.dart';
-import 'package:june/june.dart';
-import 'package:koala/main.dart';
-import 'package:koala/models/error_extension.dart';
-import 'package:koala/models/user_status.dart';
+import 'package:koala/services/login.dart';
+import 'package:koala/services/notification.dart';
+import 'package:koala/services/status.dart';
 import 'package:koala/services/utils.dart';
-import 'package:koala/widgets/user_status_widget.dart';
+import 'package:mobx/mobx.dart';
 
-Future<List<Map<String, dynamic>>> fetchSeats(int roomCode) async {
-  var session = June.getState(KoalaSessionVM());
-  Dio dio = session.dio;
+import '../models/error_extension.dart';
 
-  final response =
-      await dio.get('https://libseat.khu.ac.kr/libraries/seats/$roomCode');
-
-  session.setState();
-  if (response.statusCode == 200) {
-    List<Map<String, dynamic>> seats =
-        List<Map<String, dynamic>>.from(response.data['data']);
-    return seats;
-  } else {
-    throw Exception('Failed to load seats');
-  }
-}
-
-Future<bool> setSeat(int seatCode, int roomCode) async {
-  var session = June.getState(KoalaSessionVM());
-  await session.refreshSession();
-  Dio dio = session.dio;
-
-  int useTime = 0;
-
-  if (roomCode == 1) {
-    useTime = 240;
-  } else {
-    useTime = calculateSeatTime();
-  }
-
-  var seatData = {"seatId": seatCode, "time": useTime};
-
-  final res = await dio.post(
-    "https://libseat.khu.ac.kr/libraries/seat",
-    data: seatData,
-  );
-
-  if (res.statusCode == 200) {
-    if (res.data["data"] != 1) {
-      return false;
-    } else {
-      return true;
-    }
-  } else {
-    throw Exception("Setting failed");
-  }
-}
-
-Future<bool> extendSeat() async {
-  // careful evaluations with the Javascript code suggests that this should work.
-  var session = June.getState(KoalaSessionVM());
-  var userStatus = June.getState(UserStatusVM());
-  await session.refreshSession();
-  Dio dio = session.dio;
-
-  var statusRes = userStatus.status;
-
-  int extndTime = 0;
-
-  if (statusRes?.data.mySeat == null) {
-    throw Exception("Not using any seat");
-  }
-
-  int? seatCode = statusRes?.data.mySeat?.seat.code;
-  int? groupCode = statusRes?.data.mySeat?.seat.group.code;
-
-  if (groupCode == 1 || groupCode == 8) { // is it nice? no. does it work? think so.
-    extndTime = 240;
-  } else {
-    extndTime = calculateSeatTime();
-  }
-
-  Map<String, dynamic> requestData = {
-    "code": seatCode,
-    "time": extndTime,
-    "groupCode": groupCode,
-    "beacon": [
-      {"major": 1, "minor": 1}
-    ]
-  };
-
-  final res = await dio.post(
-    "https://libseat.khu.ac.kr/libraries/seat-extension",
-    data: requestData,
-  );
-
-  if (res.data['data'] != 1) {
-    throw Exception(extndErrorFromCode(res.data['data']).message);
-  } else {
-    return true;
-  }
-}
-
-Future<bool> leaveSeat() async {
-  var session = June.getState(KoalaSessionVM());
-  var userStatus = June.getState(UserStatusVM());
-  UserStatus? status = userStatus.status;
-  var code = status?.data.mySeat?.seat.code.toString();
-  final libStatusRes = await session.dio.post(
+Future<bool> leaveSeat(KoalaClient client, UserStatus status) async {
+  int code = status.seat!.seatCode;
+  final libStatusRes = await client.dio.post(
     "https://libseat.khu.ac.kr/libraries/leave/$code",
     options: Options(
       followRedirects: false,
@@ -116,8 +21,72 @@ Future<bool> leaveSeat() async {
   }
 
   if (libStatusRes.data['message'] == "SUCCESS") {
+    NotifService().cancelUsageTimeNotif(); // No need to check for settings.
     return true;
   } else {
     return false;
+  }
+}
+
+Future<List<Map<String, dynamic>>> fetchSeats(int roomCode) async {
+  KoalaClient client = await newDioClient();
+  final response = await client.dio
+      .get('https://libseat.khu.ac.kr/libraries/seats/$roomCode');
+
+  if (response.statusCode == 200) {
+    List<Map<String, dynamic>> seats =
+        List<Map<String, dynamic>>.from(response.data['data']);
+    return seats;
+  } else {
+    throw Exception('Failed to load seats');
+  }
+}
+
+Future<bool> tryExtendSeat(
+    ObservableFuture<UserStatus>? status,
+    ObservableFuture<List<dynamic>>? libraryStatus,
+    ObservableMap<dynamic, dynamic> settings) async {
+  try {
+    UserStatus currentStatus = status?.result;
+    List<dynamic> currLibStatus = libraryStatus?.result;
+    KoalaClient client = await newDioClient();
+
+    if (currentStatus.seat == null) {
+      throw Exception("좌석 사용중이 아닙니다");
+    }
+
+    int? seatCode = currentStatus.seat?.seatCode;
+    int? groupCode = currentStatus.seat?.groupCode;
+    Map<dynamic, dynamic> myRoom = currLibStatus
+        .firstWhere((item) => item["code"] == currentStatus.seat?.groupCode);
+    int extndTime =
+        calculateMaxReservationTimeFromNow(myRoom["startTm"], myRoom["endTm"], true);
+
+    Map<String, dynamic> requestData = {
+      "code": seatCode,
+      "time": extndTime,
+      "groupCode": groupCode,
+      "beacon": [
+        {"major": 1, "minor": 1}
+      ]
+    };
+
+    final res = await client.dio.post(
+      "https://libseat.khu.ac.kr/libraries/seat-extension",
+      data: requestData,
+    );
+
+    if (res.data['data'] != 1) {
+      throw extndErrorFromCode(res.data['data']);
+    } else {
+      if (settings['useNotif'] && extndTime == 240) {
+        NotifService().cancelUsageTimeNotif();
+        NotifService()
+            .scheduleUsageTimeNotif(); // it overrides existing notification since it shares the same id
+      }
+      return true;
+    }
+  } catch (e) {
+    rethrow;
   }
 }

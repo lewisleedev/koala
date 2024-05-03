@@ -55,33 +55,33 @@ extension ErrorCodeExtension on SeatExtensionError {
   String get message {
     switch (this) {
       case SeatExtensionError.processedSuccessfully:
-        return "Success";
+        return "연장되었습니다.";
       case SeatExtensionError.extensionNotPossible:
-        return "Seat is not available for extension";
+        return "연장 할 수 없습니다";
       case SeatExtensionError.extensionLimitExceeded:
-        return "Extension limit exceeded";
+        return "연장가능 시간을 초과하였습니다";
       case SeatExtensionError.extensionPossibleBeforeEndTime:
-        return "You can't do that yet.";
+        return "아직 연장 할 수 없습니다";
       case SeatExtensionError.facilityReserved:
-        return "It is already reserved";
+        return "이미 예약중입니다";
       case SeatExtensionError.extensionTimeTooLate:
-        return "Requested time too long";
+        return "연장 시간 오류";
       case SeatExtensionError.operationHoursEnded:
-        return "Operation hours have ended";
+        return "운영 시간이 종료되었습니다";
       case SeatExtensionError.notOperationHours:
-        return "It's not operation hours.";
+        return "운영 시간이 아닙니다";
       case SeatExtensionError.pcSeatCannotExtend:
-        return "Cannot extend PC seat";
+        return "PC좌석은 연장 할 수 없습니다";
       case SeatExtensionError.authenticationSignalNotFound:
-        return "Authentication signal not found";
+        return "인증 신호 없음";
       case SeatExtensionError.retryAfterGateEntry:
-        return "Retry after gate entry.";
+        return "입장 대기중입니다";
       case SeatExtensionError.wrongGateEntry:
-        return "Wrong gate entry";
+        return "입장이 잘못되었습니다";
       case SeatExtensionError.wifiAuthenticationFailed:
-        return "Wifi authentication failed";
+        return "WIFI 인증 실패";
       case SeatExtensionError.noPermission:
-        return "No permission";
+        return "권한이 없습니다";
       default:
         return "Unknown error";
     }
@@ -97,3 +97,4 @@ SeatExtensionError extndErrorFromCode(int code) {
   }
   return SeatExtensionError.unknownError; // Default case if no matching code is found
 }
+

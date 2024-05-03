@@ -4,11 +4,17 @@ import 'dart:math';
 
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:fast_rsa/fast_rsa.dart';
-import 'package:flutter/material.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:path_provider/path_provider.dart';
+
+Future<CookieJar> setCookieJar(Dio dio) async {
+  final Directory cacheDir = await getApplicationCacheDirectory();
+  var cookieJar = PersistCookieJar(storage: FileStorage("${cacheDir.path}/cookie"));
+  dio.interceptors.add(CookieManager(cookieJar));
+
+  return cookieJar;
+}
 
 String extractPublicKey(String jsCode) {
   RegExp pattern = RegExp(r"encrypt\.setPublicKey\('(.*)'\);");
@@ -61,57 +67,62 @@ Future<Map<String, dynamic>> encryptCred(String pubKey, String username, String 
   return loginData;
 }
 
-Future<Dio> newDioClient() async {
-  Dio dio = Dio();
-  dio.httpClientAdapter = IOHttpClientAdapter(createHttpClient: () {
-    final HttpClient client =
-    HttpClient(context: SecurityContext(withTrustedRoots: false));
-    client.badCertificateCallback = (cert, host, port) => true;
-    return client;
-  });
-  return dio;
+DateTime convertEpochTime(int epochTime) {
+  return DateTime.fromMillisecondsSinceEpoch(epochTime);
 }
 
-Future<CookieJar> setupCookieManager(Dio dio, {bool clean=false}) async {
-  final Directory appDocumentsDir = await getApplicationDocumentsDirectory();
-  var cookieJar = PersistCookieJar(storage: FileStorage("${appDocumentsDir.path}/cookie"));
-  if (clean) {
-    await cookieJar.deleteAll();
+String dtToString(DateTime dt, {int type = 0}) {
+  switch (type) {
+    // Original plan was to make user decide how the datetime gets rendered but that's for later I guess...
+    case 0:
+      return "${dt.hour.toString().padLeft(2, '0')}시 ${dt.minute.toString().padLeft(2, '0')}분";
+    default:
+      return "${dt.hour.toString().padLeft(2, '0')}시 ${dt.minute.toString().padLeft(2, '0')}분";
   }
-  dio.interceptors.add(CookieManager(cookieJar));
-  return cookieJar;
 }
 
-void showSnackbar(BuildContext context, String message) {
-  final snackBar = SnackBar(
-    content: Text(message),
-    duration: const Duration(seconds: 2),
-  );
-  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-}
+int calculateMaxReservationTimeFromNow(String startTm, String endTime, bool isExtension) {
+  // This is the trickiest part of the code that I yet understand properly. I've tried my best to test as many edge cases as possible but probably failed to do so.
+  // If you have some idea how it actually should work, please let me know :)
 
-int calculateSeatTime() {
-  // For example, when you are trying to extend seat at 10:45, you'll have to request for 60 minutes.
-  // Weird behavior requires weird solution.
-  // Not all edge cases have been tested.
   DateTime now = DateTime.now();
-  DateTime midnight = DateTime(now.year, now.month, now.day + 1);
-  int minutesUntilMidnight = midnight.difference(now).inMinutes;
-  int maxExtensionTime = (minutesUntilMidnight ~/ 30) * 30;
-  return min(240, maxExtensionTime);
+  int currentHour = now.hour;
+  int currentMinute = now.minute;
+
+  if (isExtension) {
+    // Somehow extension and reservation works differently.
+    currentMinute = (currentMinute ~/ 30) * 30;
+  } else {
+    if (currentMinute % 30 != 0) {
+      currentMinute = ((currentMinute ~/ 30) + 1) * 30;
+      if (currentMinute >= 60) {
+        currentMinute -= 60;
+        currentHour += 1;
+      }
+    }
+  }
+  if (startTm == "0000" && endTime == "0000") {
+    return 240; // Return the maximum allowed duration of 240 minutes
+  }
+  int endHour = endTime == "0000" ? 24 : int.parse(endTime.substring(0, 2));
+  int endMinute = endTime == "0000" ? 0 : int.parse(endTime.substring(2, 4));
+  int endTimeInMinutes = endHour * 60 + endMinute;
+  int currentTimeInMinutes = currentHour * 60 + currentMinute;
+  int duration = endTimeInMinutes - currentTimeInMinutes;
+  if (duration < 0) {
+    duration += 24 * 60; // Adjust for passing midnight
+  }
+  int maxDuration = 240;
+  int allowedDuration = duration > maxDuration ? maxDuration : duration;
+  int result = max((allowedDuration ~/ 30) * 30, 30);
+  return result;
 }
 
-bool isRoomOpen(int fromHour, int untilHour) {
-  int currentHour = DateTime.now().hour;
-  if (fromHour == 0 && untilHour == 0) {
-    return true;
-  }
-  if (untilHour == 0) {
-    untilHour = 24;
-  }
-  if (fromHour <= untilHour) {
-    return currentHour >= fromHour && currentHour < untilHour;
-  } else {
-    return currentHour >= fromHour || currentHour < untilHour;
-  }
+String parseImagePath(String path) {
+  List<String> parts = path.split('/');
+  return parts.last;
+}
+
+bool containsKeyValue(List<dynamic> list, String key, dynamic value) {
+  return list.any((map) => map[key] == value);
 }
