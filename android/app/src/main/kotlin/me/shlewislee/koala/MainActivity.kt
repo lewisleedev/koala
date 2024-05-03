@@ -1,4 +1,4 @@
-package com.example.koala
+package me.shlewislee.koala
 
 import io.flutter.embedding.android.FlutterActivity
 
