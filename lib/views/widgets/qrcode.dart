@@ -63,21 +63,7 @@ class QRCodeCard extends StatelessWidget {
             );
           }
         }
-        return SizedBox(
-          height: 300,
-          child: Center(
-            child: Column(
-              children: [
-                const Text("Something went wrong during qr code fetching"),
-                ElevatedButton(
-                    onPressed: () {
-                      session.refreshQRCode();
-                    },
-                    child: const Text("Refresh"))
-              ],
-            ),
-          ),
-        );
+        return Container();
       },
     );
   }

@@ -96,7 +96,7 @@ Future<List<dynamic>> _getSponsorsList() async {
   try {
     Dio dio = Dio();
     var res = await dio.get(
-        "https://gist.githubusercontent.com/lewisleedev/fd89da10525bf9e6b51b3ddb89ef59c2/raw/00707ad97651815aec1fef457e29aae5a888013e/koala_sponsors");
+        "https://gist.githubusercontent.com/lewisleedev/fd89da10525bf9e6b51b3ddb89ef59c2/raw/");
     List<dynamic> sponsorsList = jsonDecode(res.data)["sponsors"];
     return sponsorsList;
   } catch (e) {
